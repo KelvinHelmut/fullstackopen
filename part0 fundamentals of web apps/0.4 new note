@@ -1,0 +1,13 @@
+title 0.4 new note
+
+Browser->Server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note (note=Hola mundo)
+note right of Server: Persist note and redirect
+Server-->Browser: HTTP 302 location: /exampleapp/notes
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+Server-->Browser: <HTML>
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Server-->Browser: main.css
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+Server-->Browser: main.js
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+Server-->Browser: [{...}, {...}...]
