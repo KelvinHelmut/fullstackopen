@@ -2,7 +2,12 @@ import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
 const Statistic = ({text, value}) => {
-  return <div>{text} {value}</div>
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
+  )
 }
 
 const Statistics = props => {
@@ -14,14 +19,16 @@ const Statistics = props => {
 
     if (total > 0) {
       statistics = (
-        <div>
-          <Statistic text="good" value={good} />
-          <Statistic text="neutral" value={neutral} />
-          <Statistic text="bad" value={bad} />
-          <Statistic text="all" value={total} />
-          <Statistic text="avg" value={avg} />
-          <Statistic text="positive" value={positive} />
-        </div>
+        <table>
+          <tbody>
+            <Statistic text="good" value={good} />
+            <Statistic text="neutral" value={neutral} />
+            <Statistic text="bad" value={bad} />
+            <Statistic text="all" value={total} />
+            <Statistic text="avg" value={avg} />
+            <Statistic text="positive" value={positive} />
+          </tbody>
+        </table>
       )
     }
 
