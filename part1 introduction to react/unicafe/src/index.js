@@ -6,16 +6,23 @@ const Statistics = props => {
   let total = good + neutral + bad
   let avg = total ? (good + bad*-1) / total : 0
   let positive = total ? good * 100 / total : 0
+  let statistics = <div>No feedback given</div>
+
+    if (total > 0) {
+      statistics = <div>
+        <div>good {good}</div>
+        <div>neutral {neutral}</div>
+        <div>bad {bad}</div>
+        <div>all {total}</div>
+        <div>avg {avg}</div>
+        <div>positive {positive}%</div>
+      </div>
+    }
 
   return (
     <>
       <h1>Statistics</h1>
-      <div>good {good}</div>
-      <div>neutral {neutral}</div>
-      <div>bad {bad}</div>
-      <div>all {total}</div>
-      <div>avg {avg}</div>
-      <div>positive {positive}%</div>
+      {statistics}
     </>
   )
 }
