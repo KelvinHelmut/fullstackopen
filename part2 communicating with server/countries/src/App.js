@@ -16,6 +16,15 @@ const Country = ({country}) => {
   )
 }
 
+const CountryItem = ({country, handleShow}) => {
+  return (
+    <div key={country.name}>
+      {country.name}
+      <button onClick={() => handleShow(country)}>show</button>
+    </div>
+  )
+}
+
 function App() {
   const [countries, setCountries] = useState([])
   const [search, setSearch] = useState('')
@@ -25,6 +34,8 @@ function App() {
     const value = event.target.value
     setSearch(value)
   }
+
+  const handleShow = country => setSearch(country.name)
 
   useEffect(() => {
     axios
@@ -45,7 +56,9 @@ function App() {
             : (
               countriesToShow.length === 1
                 ? <Country country={countriesToShow[0]} />
-                : countriesToShow.map(country => <div key={country.name}>{country.name}</div>)
+                : countriesToShow.map(
+                    country => <CountryItem key={country.name} country={country} handleShow={handleShow} />
+                )
             )
         }
       </div>
