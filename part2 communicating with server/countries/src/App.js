@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 
+const api_key = process.env.REACT_APP_API_KEY
+
 const Country = ({country}) => {
   return (
     <>
@@ -12,6 +14,7 @@ const Country = ({country}) => {
         {country.languages.map(language => <li key={language.name}>{language.name}</li>)}
       </ul>
       <img src={country.flag} alt={country.name} width={100} />
+      <Weather country={country} />
     </>
   )
 }
@@ -22,6 +25,33 @@ const CountryItem = ({country, handleShow}) => {
       {country.name}
       <button onClick={() => handleShow(country)}>show</button>
     </div>
+  )
+}
+
+const Weather = ({country}) => {
+  const [weather, setWeather] = useState(null)
+
+  useEffect(() => {
+    axios
+      .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=${country.capital}`)
+      .then(response => setWeather(response.data.current))
+  }, [])
+
+  if (!weather) return <div></div>
+
+  return (
+    <>
+      <h2>Weather in {country.capital}</h2>
+      <div>
+        <b>Temperature:</b>
+        {weather.temperature} Celcius
+      </div>
+      <img src={weather.weather_icons[0]} alt="temperature" />
+      <div>
+        <b>Wind:</b>
+        {weather.wind_speed} mph direction {weather.wind_dir}
+      </div>
+    </>
   )
 }
 
