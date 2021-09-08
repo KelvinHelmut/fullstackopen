@@ -9,16 +9,19 @@ const Filter = ({search, handleSearch}) => {
   )
 }
 
-const Person = ({person}) => {
+const Person = ({person, deletePerson}) => {
   return (
-    <div key={person.name}>{person.name} {person.number}</div>
+    <div>
+      {person.name} {person.number}
+      <button onClick={() => deletePerson(person)}>delete</button>
+    </div>
   )
 }
 
-const Persons = ({persons}) => {
+const Persons = ({persons, deletePerson}) => {
   return (
     <>
-      {persons.map(person => <Person key={person.name} person={person} />)}
+      {persons.map(person => <Person key={person.id} person={person} deletePerson={deletePerson} />)}
     </>
   )
 }
@@ -59,10 +62,17 @@ const App = () => {
     }
     personService.create({name: newName, number: newNumber})
       .then(data => {
-        setPersons(persons.concat({name: newName, number: newNumber}))
+        setPersons(persons.concat(data))
         setNewName('')
         setNewNumber('')
       })
+  }
+
+  const deletePerson = (person) => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService.delete(person.id)
+        .then(() => setPersons(persons.filter(e => e.id !== person.id)))
+    }
   }
 
   useEffect(() => {
@@ -82,7 +92,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h3>Numbers</h3>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} deletePerson={deletePerson} />
     </div>
   )
 }
