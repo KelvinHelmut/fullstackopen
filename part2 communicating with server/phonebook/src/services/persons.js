@@ -4,6 +4,7 @@ const baseUrl = 'http://localhost:3001/persons'
 
 const list = () => axios.get(baseUrl).then(response => response.data)
 const create = data => axios.post(baseUrl, data).then(response => response.data)
+const update = (id, data) => axios.put(`${baseUrl}/${id}`, data).then(response => response.data)
 const _delete = id => axios.delete(`${baseUrl}/${id}`).then(response => response.data)
 
-export default { list, create, delete: _delete }
+export default { list, create, update, delete: _delete }
