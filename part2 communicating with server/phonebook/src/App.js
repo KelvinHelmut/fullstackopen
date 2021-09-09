@@ -42,11 +42,24 @@ const PersonForm = (props) => {
   )
 }
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="message success">
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [ persons, setPersons ] = useState([]) 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchText, setSearchText ] = useState('')
+  const [ message, setMessage ] = useState(null)
   const personsToShow = persons.filter(person => person.name.toLowerCase().includes(searchText.toLowerCase()))
 
   const handleNameChange = (event) => setNewName(event.target.value)
@@ -56,26 +69,29 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
     let index = persons.map(person => person.name).indexOf(newName)
+    let action = index >= 0 ? 'Updated' : 'Added'
+    let promise = null
     if (index >= 0) {
       let person = persons[index]
-      if (window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)) {
-        personService.update(person.id, {...person, number: newNumber})
-          .then(data => {
-            let personsCopy = [...persons]
-            personsCopy[index] = data
-            setPersons(personsCopy)
-            setNewName('')
-            setNewNumber('')
-          })
+      if (!window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)) {
+        return
       }
-    } else {
-      personService.create({name: newName, number: newNumber})
+      promise = personService.update(person.id, {...person, number: newNumber})
         .then(data => {
-          setPersons(persons.concat(data))
-          setNewName('')
-          setNewNumber('')
+          let personsCopy = [...persons]
+          personsCopy[index] = data
+          return personsCopy
         })
+    } else {
+      promise = personService.create({name: newName, number: newNumber})
+        .then(data => persons.concat(data))
     }
+    promise.then(data => {
+      showMessage(`${action} ${newName}`)
+      setPersons(data)
+      setNewName('')
+      setNewNumber('')
+    })
   }
 
   const deletePerson = (person) => {
@@ -85,6 +101,11 @@ const App = () => {
     }
   }
 
+  const showMessage = message => {
+    setMessage(message)
+    setTimeout(() => setMessage(null), 3000)
+  }
+
   useEffect(() => {
     personService.list().then(data => setPersons(data))
   }, [])
@@ -92,6 +113,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter search={searchText} handleSearch={handleSearchTextChange} />
       <h3>Add a new</h3>
       <PersonForm
