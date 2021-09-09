@@ -42,13 +42,15 @@ const PersonForm = (props) => {
   )
 }
 
-const Notification = ({ message }) => {
+const Notification = ({ message, type }) => {
   if (message === null) {
     return null
   }
 
+  const className = `message ${type}`
+
   return (
-    <div className="message success">
+    <div className={className}>
       {message}
     </div>
   )
@@ -60,6 +62,7 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchText, setSearchText ] = useState('')
   const [ message, setMessage ] = useState(null)
+  const [ messageType, setMessageType ] = useState('success')
   const personsToShow = persons.filter(person => person.name.toLowerCase().includes(searchText.toLowerCase()))
 
   const handleNameChange = (event) => setNewName(event.target.value)
@@ -87,10 +90,15 @@ const App = () => {
         .then(data => persons.concat(data))
     }
     promise.then(data => {
-      showMessage(`${action} ${newName}`)
+      showMessage(`${action} ${newName}`, 'success')
       setPersons(data)
       setNewName('')
       setNewNumber('')
+    }).catch(error => {
+      if (index >= 0) {
+        showMessage(`Information of ${newName} has already been removed from server`, 'error')
+        setPersons(persons.filter(person => person.id !== persons[index].id))
+      }
     })
   }
 
@@ -101,7 +109,8 @@ const App = () => {
     }
   }
 
-  const showMessage = message => {
+  const showMessage = (message, type) => {
+    setMessageType(type)
     setMessage(message)
     setTimeout(() => setMessage(null), 3000)
   }
@@ -113,7 +122,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} />
+      <Notification message={message} type={messageType} />
       <Filter search={searchText} handleSearch={handleSearchTextChange} />
       <h3>Add a new</h3>
       <PersonForm
