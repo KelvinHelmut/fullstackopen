@@ -58,6 +58,21 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
     const data = request.body
+    let error = undefined
+
+    if (!data.name) {
+        error = 'name missing'
+    }
+    if (!data.number) {
+        error = 'number missing'
+    }
+    if (notes.find(note => note.name === data.name)) {
+        error = 'name must be unique'
+    }
+    if (error) {
+        return response.status(400).json({ error })
+    }
+
     const note = {...data, id: generateId()}
     notes = notes.concat(note)
     response.json(note)
