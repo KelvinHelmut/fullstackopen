@@ -24,6 +24,14 @@ const notes = [
     }
 ]
 
+app.get('/info', (request, response) => {
+    response.send(`
+        <div>Phonebook has ingo for ${notes.length} people</div>
+        <br />
+        <div>${new Date()}</div>
+    `)
+})
+
 app.get('/api/persons', (request, response) => {
     response.json(notes)
 })
