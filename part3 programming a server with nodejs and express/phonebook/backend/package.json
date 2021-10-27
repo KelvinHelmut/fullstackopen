@@ -2,6 +2,9 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Phonebook backend",
+  "engines": {
+    "node": "16.x"
+  },
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -16,6 +19,7 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "heroku": "^7.59.1",
     "nodemon": "^2.0.14"
   }
 }
