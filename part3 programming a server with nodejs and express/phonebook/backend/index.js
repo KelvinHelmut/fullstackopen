@@ -1,5 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 const app = express()
 
 app.use(morgan(function (tokens, req, res) {
@@ -16,6 +17,7 @@ app.use(morgan(function (tokens, req, res) {
     return data.join(' ')
 }))
 app.use(express.json())
+app.use(cors())
 
 let notes = [
     {
