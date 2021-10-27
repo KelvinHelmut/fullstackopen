@@ -9,6 +9,11 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "build:ui": "rm -rf static && cd ../frontend && npm run build --prod && cp -r build ../backend/static",
+    "deploy": "cd ../../.. && git subtree push --prefix 'part3 programming a server with nodejs and express/phonebook/backend' heroku_p3 master",
+    "deploy:force": "cd ../../.. && git push heroku_p3 `git subtree split --prefix 'part3 programming a server with nodejs and express/phonebook/backend' master`:master --force",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
+    "logs:prod": "heroku logs -t",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Kelvin Helmut",
