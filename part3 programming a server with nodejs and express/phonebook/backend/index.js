@@ -32,20 +32,31 @@ app.get('/info', (request, response) => {
     `)
 })
 
-app.get('/api/persons', (request, response) => {
-    Person.find({}).then(data => response.json(data))
+app.get('/api/persons', (request, response, next) => {
+    Person.find({})
+        .then(data => response.json(data))
+        .catch(error => next(error))
 })
 
-app.get('/api/persons/:id', (request, response) => {
-    Person.findById(request.params.id).then(data => response.json(data))
+app.get('/api/persons/:id', (request, response, next) => {
+    Person.findById(request.params.id)
+        .then(person => {
+            if (person) {
+                response.json(person)
+            } else {
+                response.status(404).end()
+            }
+        })
+        .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndRemove(request.params.id)
         .then(data => response.status(204).end())
+        .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const data = request.body
     let error = undefined
 
@@ -60,7 +71,19 @@ app.post('/api/persons', (request, response) => {
     }
 
     const person = new Person({...data})
-    person.save().then(data => response.json(data))
+    person.save()
+        .then(data => response.json(data))
+        .catch(error => next(error))
+})
+
+app.use((error, request, response, next) => {
+    console.log(error.message)
+
+    if (error.name == 'CastError') {
+        return response.status(400).send({error: 'malformatted id'})
+    }
+
+    next(error)
 })
 
 
