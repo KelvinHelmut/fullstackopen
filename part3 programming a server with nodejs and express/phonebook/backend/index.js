@@ -57,21 +57,14 @@ app.post('/api/persons', (request, response) => {
     if (!data.number) {
         error = 'number missing'
     }
-    if (notes.find(note => note.name === data.name)) {
-        error = 'name must be unique'
-    }
     if (error) {
         return response.status(400).json({ error })
     }
 
-    const note = {...data, id: generateId()}
-    notes = notes.concat(note)
-    response.json(note)
+    const person = new Person({...data})
+    person.save().then(data => response.json(data))
 })
 
-const generateId = () => {
-    return Math.floor(Math.random() * 999999999)
-}
 
 const PORT = process.env.PORT
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
