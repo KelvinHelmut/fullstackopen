@@ -24,12 +24,16 @@ app.use(express.json())
 app.use(cors())
 app.use(express.static('static'))
 
-app.get('/info', (request, response) => {
-    response.send(`
-        <div>Phonebook has ingo for ${notes.length} people</div>
-        <br />
-        <div>${new Date()}</div>
-    `)
+app.get('/info', (request, response, next) => {
+    Person.find({})
+        .then(data => {
+            response.send(`
+                <div>Phonebook has ingo for ${data.length} people</div>
+                <br />
+                <div>${new Date()}</div>
+            `)
+        })
+        .catch(error => next(error))
 })
 
 app.get('/api/persons', (request, response, next) => {
