@@ -82,7 +82,11 @@ const App = () => {
       promise = personService.update(person.id, {...person, number: newNumber})
         .then(data => {
           let personsCopy = [...persons]
-          personsCopy[index] = data
+          if (data) {
+            personsCopy[index] = data
+          } else {
+            personsCopy = persons.filter(person => person.id !== persons[index].id)
+          }
           return personsCopy
         })
     } else {
@@ -90,15 +94,15 @@ const App = () => {
         .then(data => persons.concat(data))
     }
     promise.then(data => {
-      showMessage(`${action} ${newName}`, 'success')
+      if (index >= 0 && !data.find(e => e.id === persons[index].id)) {
+        showMessage(`Information of ${newName} has already been removed from server`, 'error')
+      } else {
+        showMessage(`${action} ${newName}`, 'success')
+      }
       setPersons(data)
       setNewName('')
       setNewNumber('')
     }).catch(error => {
-      if (index >= 0) {
-        showMessage(`Information of ${newName} has already been removed from server`, 'error')
-        setPersons(persons.filter(person => person.id !== persons[index].id))
-      }
       showMessage(error.response.data.error, 'error')
     })
   }
