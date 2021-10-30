@@ -99,6 +99,7 @@ const App = () => {
         showMessage(`Information of ${newName} has already been removed from server`, 'error')
         setPersons(persons.filter(person => person.id !== persons[index].id))
       }
+      showMessage(error.response.data.error, 'error')
     })
   }
 

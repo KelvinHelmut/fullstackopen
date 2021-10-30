@@ -83,7 +83,7 @@ app.post('/api/persons', (request, response, next) => {
 app.put('/api/persons/:id', (request, response, next) => {
     const person = {...request.body}
 
-    Person.findByIdAndUpdate(request.params.id, person, {new: true})
+    Person.findByIdAndUpdate(request.params.id, person, {new: true, runValidators: true})
         .then(data => response.json(data))
         .catch(error => next(error))
 })
