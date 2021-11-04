@@ -56,7 +56,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndRemove(request.params.id)
-        .then(data => response.status(204).end())
+        .then(() => response.status(204).end())
         .catch(error => next(error))
 })
 
@@ -71,7 +71,7 @@ app.post('/api/persons', (request, response, next) => {
         error = 'number missing'
     }
     if (error) {
-        return response.status(400).json({ error })
+        return response.status(400).json({error})
     }
 
     const person = new Person({...data})
